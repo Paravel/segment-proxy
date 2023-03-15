@@ -61,9 +61,19 @@ func NewSegmentReverseProxy(cdn *url.URL, trackingAPI *url.URL) http.Handler {
 		req.Host = req.URL.Host
 	}
 
+// This is how we could add an allow list for CORS, but we don't need it for now.
+// 	mod := func(allowList map[string]bool) func(r *http.Response) error {
+//     return func(r *http.Response) error {
+// 			if origin := r.Request.Header.Get("Origin"); allowList[origin] {
+// 				r.Header.Set("Access-Control-Allow-Origin", origin)
+// 				r.Header.Set("Access-Control-Allow-Methods", "GET, POST, HEAD, PUT, OPTIONS")
+// 				r.Header.Set("Access-Control-Allow-Headers", "*")
+// 				r.Header.Set("Access-Control-Allow-Credentials", "true")
+// 			}
+
 	allowList := map[string]bool{
     "*": true,
-}
+	}
 
 	mod := func(allowList map[string]bool) func(r *http.Response) error {
     return func(r *http.Response) error {
