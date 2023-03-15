@@ -59,12 +59,6 @@ func NewSegmentReverseProxy(cdn *url.URL, trackingAPI *url.URL) http.Handler {
 		// Set the host of the request to the host of of the destination URL.
 		// See http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/.
 		req.Host = req.URL.Host
-
-		// set cors headers
-		// req.Header.Set("Access-Control-Allow-Origin", "*")
-		// req.Header.Set("Access-Control-Allow-Methods", "GET, POST, HEAD, PUT, OPTIONS")
-		// req.Header.Set("Access-Control-Allow-Headers", "*")
-		// req.Header.Set("Access-Control-Allow-Credentials", "true")
 	}
 
 	allowList := map[string]bool{
