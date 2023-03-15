@@ -59,6 +59,12 @@ func NewSegmentReverseProxy(cdn *url.URL, trackingAPI *url.URL) http.Handler {
 		// Set the host of the request to the host of of the destination URL.
 		// See http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/.
 		req.Host = req.URL.Host
+
+		// set cors headers
+		req.Header.Set("Access-Control-Allow-Origin", "*")
+		req.Header.Set("Access-Control-Allow-Methods", "GET", "HEAD", "POST", "PUT", "OPTIONS")
+		req.Header.Set("Access-Control-Allow-Headers", "*")
+		req.Header.Set("Access-Control-Allow-Credentials", "true")
 	}
 	return &httputil.ReverseProxy{Director: director}
 }
@@ -82,9 +88,5 @@ func main() {
 		log.Printf("serving proxy at port %v\n", *port)
 	}
 
-	headersOk := handlers.AllowedHeaders([]string{"*"})
-	originsOk := handlers.AllowedOrigins([]string{"*"})
-	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
-
-	log.Fatal(http.ListenAndServe(":"+*port, handlers.CORS(originsOk, headersOk, methodsOk)(proxy)))
+	log.Fatal(http.ListenAndServe(":"+*port, proxy))
 }
