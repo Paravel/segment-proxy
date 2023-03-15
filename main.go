@@ -61,12 +61,28 @@ func NewSegmentReverseProxy(cdn *url.URL, trackingAPI *url.URL) http.Handler {
 		req.Host = req.URL.Host
 
 		// set cors headers
-		req.Header.Set("Access-Control-Allow-Origin", "*")
-		req.Header.Set("Access-Control-Allow-Methods", "GET, POST, HEAD, PUT, OPTIONS")
-		req.Header.Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		req.Header.Set("Access-Control-Allow-Credentials", "true")
+		// req.Header.Set("Access-Control-Allow-Origin", "*")
+		// req.Header.Set("Access-Control-Allow-Methods", "GET, POST, HEAD, PUT, OPTIONS")
+		// req.Header.Set("Access-Control-Allow-Headers", "*")
+		// req.Header.Set("Access-Control-Allow-Credentials", "true")
 	}
-	return &httputil.ReverseProxy{Director: director}
+
+	allowList := map[string]bool{
+    "*": true,
+}
+
+	mod := func(allowList map[string]bool) func(r *http.Response) error {
+    return func(r *http.Response) error {
+				r.Header.Set("Access-Control-Allow-Origin", "*")
+				r.Header.Set("Access-Control-Allow-Methods", "GET, POST, HEAD, PUT, OPTIONS")
+				r.Header.Set("Access-Control-Allow-Headers", "*")
+				r.Header.Set("Access-Control-Allow-Credentials", "true")
+
+        return nil
+    }
+	}
+
+	return &httputil.ReverseProxy{Director: director, ModifyResponse: mod(allowList)}
 }
 
 var port = flag.String("port", "8080", "bind address")
