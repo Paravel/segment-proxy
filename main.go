@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/gorilla/handlers"
-	"github.com/rs/cors"
 )
 
 // singleJoiningSlash is copied from httputil.singleJoiningSlash method.
@@ -83,6 +82,9 @@ func main() {
 		log.Printf("serving proxy at port %v\n", *port)
 	}
 
-	corsProxy := cors.Default().Handler(proxy)
-	log.Fatal(http.ListenAndServe(":"+*port, corsProxy))
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
+	log.Fatal(http.ListenAndServe(":"+*port, handlers.CORS(originsOk, headersOk, methodsOk)(proxy)))
 }
