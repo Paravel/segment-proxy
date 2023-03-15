@@ -62,8 +62,8 @@ func NewSegmentReverseProxy(cdn *url.URL, trackingAPI *url.URL) http.Handler {
 
 		// set cors headers
 		req.Header.Set("Access-Control-Allow-Origin", "*")
-		req.Header.Set("Access-Control-Allow-Methods", "GET", "HEAD", "POST", "PUT", "OPTIONS")
-		req.Header.Set("Access-Control-Allow-Headers", "*")
+		req.Header.Set("Access-Control-Allow-Methods", "GET, POST, HEAD, PUT, OPTIONS")
+		req.Header.Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		req.Header.Set("Access-Control-Allow-Credentials", "true")
 	}
 	return &httputil.ReverseProxy{Director: director}
